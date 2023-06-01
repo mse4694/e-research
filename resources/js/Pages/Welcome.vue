@@ -14,6 +14,7 @@ import BaseInput from '../Components/BaseInput.vue'
 import BaseRadioGroup from '../Components/Radio/BaseRadioGroup.vue'
 import BaseLabel from '../Components/BaseLabel.vue'
 import Alert from '../Components/Alert.vue';
+import backgroundImgUrl from '@/Asset/images/background2.jpg'
 import Profile from '../Components/Profile.vue'
 
 const props = defineProps({
@@ -48,9 +49,11 @@ const publication_date = [
     { value: 10, label: '10 years' },
 ]
 
+//const backgroundImgUrl = new URL('@/assets/images/background2.jpg', import.meta.url)
 const isOpen = ref(false)
 let checkoutButtonRef =ref(null)
 const showAlert = ref(false)
+let userInfo = reactive({})
 
 const fakeUser = [
     {
@@ -2407,7 +2410,8 @@ function clearAllFilter() {
 
 function findUser(arr, val) {
     const myUser =  arr.find((arrVal) => val === arrVal.id)
-    return `${myUser.firstName} ${myUser.lastName}`
+    let info =  `{"name":"${myUser.firstName} ${myUser.lastName}", "ein":"${myUser.ein}", "ssn":"${myUser.ssn}", "doi":"${myUser.address.coordinates.lat}/${myUser.username}"}`
+    userInfo = JSON.parse(info)
 }
 
 const createData = () => {
@@ -2530,11 +2534,13 @@ const createData = () => {
 
                             </div>
                         </div>
-                        <div class="py-6 px-4 bg-gray-50">
+                        <div class="py-2 px-4 bg-gray-50">
                             <div class="flex flex-col space-y-2 mt-4">
-                                <button class="bg-green-800 p-3 text-white rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700" ref="checkoutButtonRef" @click="setIsOpen(false)">Search</button>
-                                <button class="p-3 bg-white text-gray-500 hover:text-black rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" @click="setIsOpen(false)">Do nothing</button>
-                                <button class="p-3 bg-white text-gray-500 hover:text-black rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" @click="clearAllFilter()">Clear all filter</button>
+                                <button class="bg-green-800 p-2 text-white rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700" ref="checkoutButtonRef" @click="setIsOpen(false)">Search</button>
+                                <div class="flex-row justify-between">
+                                    <button class="w-1/2 p-2 bg-white text-gray-500 hover:text-black rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" @click="setIsOpen(false)">Close</button>
+                                    <button class="w-1/2 p-2 bg-white text-gray-500 hover:text-black rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" @click="clearAllFilter()">Clear all filter</button>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -2547,27 +2553,25 @@ const createData = () => {
 
     <Head title="Welcome" />
 
-    <div class="flex w-full justify-end m-2">
+    <div :style="{ backgroundImage: `url(${backgroundImgUrl})`, backgroundSize: 'contain' }">
+        <div class="flex w-full justify-end m-2">
         <Alert :show="showAlert" :on-dismiss="() => (showAlert = false)" title="Create Research Data">
             <p>ดำเนินการสร้างฐานข้อมูลเรียบร้อย</p>
         </Alert>
     </div>
 
-    <button @click="setIsOpen(true)" class="p-4 bg-green-800 hover:bg-green-700 fixed top-6 z-10 left-6 rounded-full">
+        <button @click="setIsOpen(true)" class="p-4 bg-green-800 hover:bg-green-700 fixed top-6 z-10 left-6 rounded-full">
         <FunnelIcon class="w-8 h-8 text-white" />
     </button>
 
-
-
 <!--    <Profile></Profile>-->
-<!--    <div v-if="!fakePosts.length" class="flex justify-end mr-2">-->
-    <div class="flex justify-end mr-2">
-        <button @click="createData" class="border p-2 rounded-lg">Create Data</button>
-    </div>
-    <div class="flex justify-center m-4 p-10">
-        SiMed Logo HERE
-    </div>
-    <div class="flex w-full justify-center mb-2">
+        <div class="flex justify-end mr-2">
+            <button @click="createData" class="border p-2 rounded-lg text-white">Create Data</button>
+        </div>
+        <div class="flex justify-center m-4 p-10 text-3xl text-white">
+            Faculty of Medicine Siriraj Hospital Electronic Research Finding
+        </div>
+        <div class="flex w-full justify-center mb-2 ">
 
         <div class="relative w-3/4 justify-center">
             <input type="text" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg rounded-l-lg border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search Mockups, Logos, Design Templates..." required>
@@ -2577,16 +2581,18 @@ const createData = () => {
             </button>
         </div>
     </div>
-    <div
+        <div
         v-for="item in fakePosts" :key="item.id"
         class="flex w-full justify-center mb-1"
     >
-        <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-md">
+        <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-50 backdrop-filter backdrop-blur-lg">
             <div>
-                <h1 class="mt-2 text-lg font-medium text-sky-600 ">{{ item.title }}</h1>
-                <p class="mt-1 text-sm text-gray-600 ">{{ findUser(fakeUser, item.id) }}</p>
+                <h1 class="mt-2 text-lg font-light text-blue-700 ">{{ item.title }}</h1>
+                {{ findUser(fakeUser, item.id) }}
+                <p class="mt-1 text-sm text-green-800">{{ userInfo.name }}</p>
+                <p class="mt-1 text-sm text-gray-800 ">ISBN: {{ userInfo.ein }}. ISSN: {{ userInfo.ssn }}. doi: {{ userInfo.doi }}.</p>
             </div>
-            <div class="mt-1 text-sm text-green-600">
+            <div class="mt-1 text-sm font-light text-black">
                 {{ item.body }}
             </div>
             <div class="mt-1 text-xs text-gray-800">
@@ -2595,8 +2601,9 @@ const createData = () => {
             </div>
         </div>
     </div>
-    <div class="flex justify-center">
+        <div class="flex justify-center">
         {{ form.data() }}
+    </div>
     </div>
 
 <!--    <div-->
