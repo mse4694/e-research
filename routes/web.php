@@ -18,11 +18,13 @@ use Illuminate\Support\Facades\Redirect;
 */
 
 Route::get('/', function () {
+    $researchs = \App\Models\Research::paginate(5);
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
+        'researchs' => $researchs,
     ]);
 })->name('index');
 

@@ -1,6 +1,6 @@
 <script setup>
 import {reactive, ref} from 'vue'
-import { Head, Link, useForm, router } from '@inertiajs/vue3';
+import { Head, useForm, router } from '@inertiajs/vue3';
 import {
     Dialog,
     DialogOverlay,
@@ -14,6 +14,7 @@ import BaseInput from '../Components/BaseInput.vue'
 import BaseRadioGroup from '../Components/Radio/BaseRadioGroup.vue'
 import BaseLabel from '../Components/BaseLabel.vue'
 import Alert from '../Components/Alert.vue';
+import Paginate from '../Components/Pagination.vue'
 import backgroundImgUrl from '@/Asset/images/background2.jpg'
 import Profile from '../Components/Profile.vue'
 
@@ -31,6 +32,10 @@ const props = defineProps({
     phpVersion: {
         type: String,
         required: true,
+    },
+    researchs: {
+        type: Object,
+        default: []
     },
 });
 
@@ -2242,158 +2247,158 @@ const fakePosts = [
     }
 ]
 
-const fakeQuote = [
-    {
-        "id": 1,
-        "quote": "Life isn’t about getting and having, it’s about giving and being.",
-        "author": "Kevin Kruse"
-    },
-    {
-        "id": 2,
-        "quote": "Whatever the mind of man can conceive and believe, it can achieve.",
-        "author": "Napoleon Hill"
-    },
-    {
-        "id": 3,
-        "quote": "Strive not to be a success, but rather to be of value.",
-        "author": "Albert Einstein"
-    },
-    {
-        "id": 4,
-        "quote": "Two roads diverged in a wood, and I—I took the one less traveled by, And that has made all the difference.",
-        "author": "Robert Frost"
-    },
-    {
-        "id": 5,
-        "quote": "I attribute my success to this: I never gave or took any excuse.",
-        "author": "Florence Nightingale"
-    },
-    {
-        "id": 6,
-        "quote": "You miss 100% of the shots you don’t take.",
-        "author": "Wayne Gretzky"
-    },
-    {
-        "id": 7,
-        "quote": "I’ve missed more than 9000 shots in my career. I’ve lost almost 300 games. 26 times I’ve been trusted to take the game winning shot and missed. I’ve failed over and over and over again in my life. And that is why I succeed.",
-        "author": "Michael Jordan"
-    },
-    {
-        "id": 8,
-        "quote": "The most difficult thing is the decision to act, the rest is merely tenacity.",
-        "author": "Amelia Earhart"
-    },
-    {
-        "id": 9,
-        "quote": "Every strike brings me closer to the next home run.",
-        "author": "Babe Ruth"
-    },
-    {
-        "id": 10,
-        "quote": "Definiteness of purpose is the starting point of all achievement.",
-        "author": "W. Clement Stone"
-    },
-    {
-        "id": 11,
-        "quote": "We must balance conspicuous consumption with conscious capitalism.",
-        "author": "Kevin Kruse"
-    },
-    {
-        "id": 12,
-        "quote": "Life is what happens to you while you’re busy making other plans.",
-        "author": "John Lennon"
-    },
-    {
-        "id": 13,
-        "quote": "We become what we think about.",
-        "author": "Earl Nightingale"
-    },
-    {
-        "id": 14,
-        "quote": "Twenty years from now you will be more disappointed by the things that you didn’t do than by the ones you did do, so throw off the bowlines, sail away from safe harbor, catch the trade winds in your sails.  Explore, Dream, Discover.",
-        "author": "Mark Twain"
-    },
-    {
-        "id": 15,
-        "quote": "Life is 10% what happens to me and 90% of how I react to it.",
-        "author": "Charles Swindoll"
-    },
-    {
-        "id": 16,
-        "quote": "The most common way people give up their power is by thinking they don’t have any.",
-        "author": "Alice Walker"
-    },
-    {
-        "id": 17,
-        "quote": "The mind is everything. What you think you become.",
-        "author": "Buddha"
-    },
-    {
-        "id": 18,
-        "quote": "The best time to plant a tree was 20 years ago. The second best time is now.",
-        "author": "Chinese Proverb"
-    },
-    {
-        "id": 19,
-        "quote": "An unexamined life is not worth living.",
-        "author": "Socrates"
-    },
-    {
-        "id": 20,
-        "quote": "Eighty percent of success is showing up.",
-        "author": "Woody Allen"
-    },
-    {
-        "id": 21,
-        "quote": "Your time is limited, so don’t waste it living someone else’s life.",
-        "author": "Steve Jobs"
-    },
-    {
-        "id": 22,
-        "quote": "Winning isn’t everything, but wanting to win is.",
-        "author": "Vince Lombardi"
-    },
-    {
-        "id": 23,
-        "quote": "I am not a product of my circumstances. I am a product of my decisions.",
-        "author": "Stephen Covey"
-    },
-    {
-        "id": 24,
-        "quote": "Every child is an artist.  The problem is how to remain an artist once he grows up.",
-        "author": "Pablo Picasso"
-    },
-    {
-        "id": 25,
-        "quote": "You can never cross the ocean until you have the courage to lose sight of the shore.",
-        "author": "Christopher Columbus"
-    },
-    {
-        "id": 26,
-        "quote": "I’ve learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel.",
-        "author": "Maya Angelou"
-    },
-    {
-        "id": 27,
-        "quote": "Either you run the day, or the day runs you.",
-        "author": "Jim Rohn"
-    },
-    {
-        "id": 28,
-        "quote": "Whether you think you can or you think you can’t, you’re right.",
-        "author": "Henry Ford"
-    },
-    {
-        "id": 29,
-        "quote": "The two most important days in your life are the day you are born and the day you find out why.",
-        "author": "Mark Twain"
-    },
-    {
-        "id": 30,
-        "quote": "Whatever you can do, or dream you can, begin it.  Boldness has genius, power and magic in it.",
-        "author": "Johann Wolfgang von Goethe"
-    }
-]
+// const fakeQuote = [
+//     {
+//         "id": 1,
+//         "quote": "Life isn’t about getting and having, it’s about giving and being.",
+//         "author": "Kevin Kruse"
+//     },
+//     {
+//         "id": 2,
+//         "quote": "Whatever the mind of man can conceive and believe, it can achieve.",
+//         "author": "Napoleon Hill"
+//     },
+//     {
+//         "id": 3,
+//         "quote": "Strive not to be a success, but rather to be of value.",
+//         "author": "Albert Einstein"
+//     },
+//     {
+//         "id": 4,
+//         "quote": "Two roads diverged in a wood, and I—I took the one less traveled by, And that has made all the difference.",
+//         "author": "Robert Frost"
+//     },
+//     {
+//         "id": 5,
+//         "quote": "I attribute my success to this: I never gave or took any excuse.",
+//         "author": "Florence Nightingale"
+//     },
+//     {
+//         "id": 6,
+//         "quote": "You miss 100% of the shots you don’t take.",
+//         "author": "Wayne Gretzky"
+//     },
+//     {
+//         "id": 7,
+//         "quote": "I’ve missed more than 9000 shots in my career. I’ve lost almost 300 games. 26 times I’ve been trusted to take the game winning shot and missed. I’ve failed over and over and over again in my life. And that is why I succeed.",
+//         "author": "Michael Jordan"
+//     },
+//     {
+//         "id": 8,
+//         "quote": "The most difficult thing is the decision to act, the rest is merely tenacity.",
+//         "author": "Amelia Earhart"
+//     },
+//     {
+//         "id": 9,
+//         "quote": "Every strike brings me closer to the next home run.",
+//         "author": "Babe Ruth"
+//     },
+//     {
+//         "id": 10,
+//         "quote": "Definiteness of purpose is the starting point of all achievement.",
+//         "author": "W. Clement Stone"
+//     },
+//     {
+//         "id": 11,
+//         "quote": "We must balance conspicuous consumption with conscious capitalism.",
+//         "author": "Kevin Kruse"
+//     },
+//     {
+//         "id": 12,
+//         "quote": "Life is what happens to you while you’re busy making other plans.",
+//         "author": "John Lennon"
+//     },
+//     {
+//         "id": 13,
+//         "quote": "We become what we think about.",
+//         "author": "Earl Nightingale"
+//     },
+//     {
+//         "id": 14,
+//         "quote": "Twenty years from now you will be more disappointed by the things that you didn’t do than by the ones you did do, so throw off the bowlines, sail away from safe harbor, catch the trade winds in your sails.  Explore, Dream, Discover.",
+//         "author": "Mark Twain"
+//     },
+//     {
+//         "id": 15,
+//         "quote": "Life is 10% what happens to me and 90% of how I react to it.",
+//         "author": "Charles Swindoll"
+//     },
+//     {
+//         "id": 16,
+//         "quote": "The most common way people give up their power is by thinking they don’t have any.",
+//         "author": "Alice Walker"
+//     },
+//     {
+//         "id": 17,
+//         "quote": "The mind is everything. What you think you become.",
+//         "author": "Buddha"
+//     },
+//     {
+//         "id": 18,
+//         "quote": "The best time to plant a tree was 20 years ago. The second best time is now.",
+//         "author": "Chinese Proverb"
+//     },
+//     {
+//         "id": 19,
+//         "quote": "An unexamined life is not worth living.",
+//         "author": "Socrates"
+//     },
+//     {
+//         "id": 20,
+//         "quote": "Eighty percent of success is showing up.",
+//         "author": "Woody Allen"
+//     },
+//     {
+//         "id": 21,
+//         "quote": "Your time is limited, so don’t waste it living someone else’s life.",
+//         "author": "Steve Jobs"
+//     },
+//     {
+//         "id": 22,
+//         "quote": "Winning isn’t everything, but wanting to win is.",
+//         "author": "Vince Lombardi"
+//     },
+//     {
+//         "id": 23,
+//         "quote": "I am not a product of my circumstances. I am a product of my decisions.",
+//         "author": "Stephen Covey"
+//     },
+//     {
+//         "id": 24,
+//         "quote": "Every child is an artist.  The problem is how to remain an artist once he grows up.",
+//         "author": "Pablo Picasso"
+//     },
+//     {
+//         "id": 25,
+//         "quote": "You can never cross the ocean until you have the courage to lose sight of the shore.",
+//         "author": "Christopher Columbus"
+//     },
+//     {
+//         "id": 26,
+//         "quote": "I’ve learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel.",
+//         "author": "Maya Angelou"
+//     },
+//     {
+//         "id": 27,
+//         "quote": "Either you run the day, or the day runs you.",
+//         "author": "Jim Rohn"
+//     },
+//     {
+//         "id": 28,
+//         "quote": "Whether you think you can or you think you can’t, you’re right.",
+//         "author": "Henry Ford"
+//     },
+//     {
+//         "id": 29,
+//         "quote": "The two most important days in your life are the day you are born and the day you find out why.",
+//         "author": "Mark Twain"
+//     },
+//     {
+//         "id": 30,
+//         "quote": "Whatever you can do, or dream you can, begin it.  Boldness has genius, power and magic in it.",
+//         "author": "Johann Wolfgang von Goethe"
+//     }
+// ]
 
 function setIsOpen(value) {
     isOpen.value = value
@@ -2404,18 +2409,16 @@ function clearAllFilter() {
     //setIsOpen(false)
 }
 
-// function findUser(arr, val) {
-//     return arr.find((arrVal) => val === arrVal.id);
-// }
-
 function findUser(arr, val) {
     const myUser =  arr.find((arrVal) => val === arrVal.id)
     let info =  `{"name":"${myUser.firstName} ${myUser.lastName}", "ein":"${myUser.ein}", "ssn":"${myUser.ssn}", "doi":"${myUser.address.coordinates.lat}/${myUser.username}"}`
     userInfo = JSON.parse(info)
+
+    return
 }
 
 const createData = () => {
-    let error_display = ''
+    //let error_display = ''
 
     router.post(route('create-data'), {}, {
         preserveState: true,
@@ -2565,45 +2568,78 @@ const createData = () => {
     </button>
 
 <!--    <Profile></Profile>-->
-        <div class="flex justify-end mr-2">
-            <button @click="createData" class="border p-2 rounded-lg text-white">Create Data</button>
-        </div>
-        <div class="flex justify-center m-4 p-10 text-3xl text-white">
-            Faculty of Medicine Siriraj Hospital Electronic Research Finding
-        </div>
-        <div class="flex w-full justify-center mb-2 ">
+    <div class="flex justify-end mr-2">
+        <button @click="createData" class="border p-2 rounded-lg text-white">Create Data</button>
+    </div>
+    <div class="flex justify-center m-4 p-10 text-5xl text-white">
+        Faculty of Medicine Siriraj Hospital Electronic Research Finding
+    </div>
 
-        <div class="relative w-3/4 justify-center">
-            <input type="text" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg rounded-l-lg border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search Mockups, Logos, Design Templates..." required>
-            <button type="submit" class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
-                <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                <span class="sr-only">Search</span>
-            </button>
-        </div>
+    <div class="flex w-full justify-center mb-2">
+      <div class="relative w-3/4 justify-center bg-white p-2 rounded-md">
+        Slide Search Filter :: {{ form.data() }}
+      </div>
     </div>
-        <div
-        v-for="item in fakePosts" :key="item.id"
-        class="flex w-full justify-center mb-1"
+
+    <div class="flex w-full justify-center mb-2 ">
+      <div class="relative w-3/4 justify-center">
+          <input type="text" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg rounded-l-lg border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search Mockups, Logos, Design Templates..." required>
+          <button type="submit" class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+              <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+              <span class="sr-only">Search</span>
+          </button>
+      </div>
+    </div>
+    <div class="flex w-full justify-center mb-2">
+        <Paginate class="relative w-3/4 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />
+    </div>
+
+    <div
+      v-for="item in props.researchs.data" :key="item.id"
+      class="flex w-full justify-center mb-1"
     >
-        <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-50 backdrop-filter backdrop-blur-lg">
-            <div>
-                <h1 class="mt-2 text-lg font-light text-blue-700 ">{{ item.title }}</h1>
-                {{ findUser(fakeUser, item.id) }}
-                <p class="mt-1 text-sm text-green-800">{{ userInfo.name }}</p>
-                <p class="mt-1 text-sm text-gray-800 ">ISBN: {{ userInfo.ein }}. ISSN: {{ userInfo.ssn }}. doi: {{ userInfo.doi }}.</p>
-            </div>
-            <div class="mt-1 text-sm font-light text-black">
-                {{ item.body }}
-            </div>
-            <div class="mt-1 text-xs text-gray-800">
-                KEYWORD:
-                <span class="mx-2" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</span>
-            </div>
+      <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-50 backdrop-filter backdrop-blur-lg">
+        <div>
+          <h1 class="mt-2 text-2xl font-light text-blue-700 ">{{ item.title }}</h1>
+          <p class="mt-1 text-md text-amber-400">{{ item.first_author }}</p>
+          <p class="mt-1 text-md text-white ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}.</p>
         </div>
+        <div class="mt-1 text-md font-light">
+          {{ item.abstract }}
+        </div>
+        <div class="mt-1 text-sm text-white">
+          KEYWORD:
+          <span v-if="JSON.parse(item.tags).length" class="mx-2" v-for="(tag, index) in JSON.parse(item.tags)" :key="index">#{{ tag.tag }}</span>
+          <span v-else class="mx-2" >-</span>
+        </div>
+      </div>
     </div>
-        <div class="flex justify-center">
-        {{ form.data() }}
+    <div class="flex w-full justify-center mb-2">
+      <Paginate class="relative w-3/4 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />
     </div>
+<!--    <div-->
+<!--        v-for="item in fakePosts" :key="item.id"-->
+<!--        class="flex w-full justify-center mb-1"-->
+<!--    >-->
+<!--        <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-50 backdrop-filter backdrop-blur-lg">-->
+<!--            <div>-->
+<!--                <h1 class="mt-2 text-2xl font-light text-blue-700 ">{{ item.title }}</h1>-->
+<!--                {{ findUser(fakeUser, item.id) }}-->
+<!--                <p class="mt-1 text-md text-green-800">{{ userInfo.name }}</p>-->
+<!--                <p class="mt-1 text-md text-gray-600 ">ISBN: {{ userInfo.ein }}. ISSN: {{ userInfo.ssn }}. doi: {{ userInfo.doi }}.</p>-->
+<!--            </div>-->
+<!--            <div class="mt-1 text-md font-light text-white">-->
+<!--                {{ item.body }}-->
+<!--            </div>-->
+<!--            <div class="mt-1 text-sm text-gray-800">-->
+<!--                KEYWORD:-->
+<!--                <span class="mx-2" v-for="(tag, index) in item.tags" :key="index">{{ tag }}</span>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--        <div class="flex justify-center">-->
+<!--        {{ form.data() }}-->
+<!--    </div>-->
     </div>
 
 <!--    <div-->
@@ -2907,14 +2943,3 @@ const createData = () => {
 <!--        </div>-->
 <!--    </div>-->
 </template>
-
-<style>
-.bg-dots-darker {
-    background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(0,0,0,0.07)'/%3E%3C/svg%3E");
-}
-@media (prefers-color-scheme: dark) {
-    .dark\:bg-dots-lighter {
-        background-image: url("data:image/svg+xml,%3Csvg width='30' height='30' viewBox='0 0 30 30' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1.22676 0C1.91374 0 2.45351 0.539773 2.45351 1.22676C2.45351 1.91374 1.91374 2.45351 1.22676 2.45351C0.539773 2.45351 0 1.91374 0 1.22676C0 0.539773 0.539773 0 1.22676 0Z' fill='rgba(255,255,255,0.07)'/%3E%3C/svg%3E");
-    }
-}
-</style>
