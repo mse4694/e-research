@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, ref} from 'vue'
+import {reactive, ref, onMounted, onUnmounted} from 'vue'
 import { Head, useForm, router } from '@inertiajs/vue3';
 import {
     Dialog,
@@ -8,15 +8,20 @@ import {
     TransitionRoot,
     TransitionChild
 } from '@headlessui/vue'
-import { FunnelIcon, XMarkIcon } from '@heroicons/vue/24/outline'
+import * as dayjs from 'dayjs'
+import * as localizedFormat from 'dayjs/plugin/localizedFormat'
+import { FunnelIcon, XMarkIcon, ChevronDoubleUpIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
 import Field from '../Components/Field.vue'
 import BaseInput from '../Components/BaseInput.vue'
 import BaseRadioGroup from '../Components/Radio/BaseRadioGroup.vue'
 import BaseLabel from '../Components/BaseLabel.vue'
 import Alert from '../Components/Alert.vue';
+import Avatar from '../Components/Avatar.vue';
 import Paginate from '../Components/Pagination.vue'
 import backgroundImgUrl from '@/Asset/images/background2.jpg'
 import Profile from '../Components/Profile.vue'
+
+dayjs.extend(localizedFormat)
 
 const props = defineProps({
     canLogin: {
@@ -37,14 +42,16 @@ const props = defineProps({
         type: Object,
         default: []
     },
+    filters: Object ,
 });
 
 const form = useForm({
-    research_title_eng: null,
-    author_first: null,
-    journal_name: null,
-    doi: null,
-    publication_date: 0,
+  research_title_eng: null,
+  keyword: props.filters.keyword ? props.filters.keyword : null,
+  first_author: props.filters.first_author ? props.filters.first_author : null,
+  journal_name: null,
+  doi: props.filters.doi ? props.filters.doi : null,
+  publication_date: 0,
 })
 
 const publication_date = [
@@ -56,6 +63,8 @@ const publication_date = [
 
 //const backgroundImgUrl = new URL('@/assets/images/background2.jpg', import.meta.url)
 const isOpen = ref(false)
+const toTopButton = ref(false)
+const scrollPosition = ref(null)
 let checkoutButtonRef =ref(null)
 const showAlert = ref(false)
 let userInfo = reactive({})
@@ -1891,7 +1900,6 @@ const fakeUser = [
         "userAgent": "Mozilla/5.0 (X11; Linux i686) AppleWebKit/535.11 (KHTML, like Gecko) Chrome/17.0.963.66 Safari/535.11"
     }
 ]
-
 const fakePosts = [
     {
         "id": 1,
@@ -2247,165 +2255,26 @@ const fakePosts = [
     }
 ]
 
-// const fakeQuote = [
-//     {
-//         "id": 1,
-//         "quote": "Life isn’t about getting and having, it’s about giving and being.",
-//         "author": "Kevin Kruse"
-//     },
-//     {
-//         "id": 2,
-//         "quote": "Whatever the mind of man can conceive and believe, it can achieve.",
-//         "author": "Napoleon Hill"
-//     },
-//     {
-//         "id": 3,
-//         "quote": "Strive not to be a success, but rather to be of value.",
-//         "author": "Albert Einstein"
-//     },
-//     {
-//         "id": 4,
-//         "quote": "Two roads diverged in a wood, and I—I took the one less traveled by, And that has made all the difference.",
-//         "author": "Robert Frost"
-//     },
-//     {
-//         "id": 5,
-//         "quote": "I attribute my success to this: I never gave or took any excuse.",
-//         "author": "Florence Nightingale"
-//     },
-//     {
-//         "id": 6,
-//         "quote": "You miss 100% of the shots you don’t take.",
-//         "author": "Wayne Gretzky"
-//     },
-//     {
-//         "id": 7,
-//         "quote": "I’ve missed more than 9000 shots in my career. I’ve lost almost 300 games. 26 times I’ve been trusted to take the game winning shot and missed. I’ve failed over and over and over again in my life. And that is why I succeed.",
-//         "author": "Michael Jordan"
-//     },
-//     {
-//         "id": 8,
-//         "quote": "The most difficult thing is the decision to act, the rest is merely tenacity.",
-//         "author": "Amelia Earhart"
-//     },
-//     {
-//         "id": 9,
-//         "quote": "Every strike brings me closer to the next home run.",
-//         "author": "Babe Ruth"
-//     },
-//     {
-//         "id": 10,
-//         "quote": "Definiteness of purpose is the starting point of all achievement.",
-//         "author": "W. Clement Stone"
-//     },
-//     {
-//         "id": 11,
-//         "quote": "We must balance conspicuous consumption with conscious capitalism.",
-//         "author": "Kevin Kruse"
-//     },
-//     {
-//         "id": 12,
-//         "quote": "Life is what happens to you while you’re busy making other plans.",
-//         "author": "John Lennon"
-//     },
-//     {
-//         "id": 13,
-//         "quote": "We become what we think about.",
-//         "author": "Earl Nightingale"
-//     },
-//     {
-//         "id": 14,
-//         "quote": "Twenty years from now you will be more disappointed by the things that you didn’t do than by the ones you did do, so throw off the bowlines, sail away from safe harbor, catch the trade winds in your sails.  Explore, Dream, Discover.",
-//         "author": "Mark Twain"
-//     },
-//     {
-//         "id": 15,
-//         "quote": "Life is 10% what happens to me and 90% of how I react to it.",
-//         "author": "Charles Swindoll"
-//     },
-//     {
-//         "id": 16,
-//         "quote": "The most common way people give up their power is by thinking they don’t have any.",
-//         "author": "Alice Walker"
-//     },
-//     {
-//         "id": 17,
-//         "quote": "The mind is everything. What you think you become.",
-//         "author": "Buddha"
-//     },
-//     {
-//         "id": 18,
-//         "quote": "The best time to plant a tree was 20 years ago. The second best time is now.",
-//         "author": "Chinese Proverb"
-//     },
-//     {
-//         "id": 19,
-//         "quote": "An unexamined life is not worth living.",
-//         "author": "Socrates"
-//     },
-//     {
-//         "id": 20,
-//         "quote": "Eighty percent of success is showing up.",
-//         "author": "Woody Allen"
-//     },
-//     {
-//         "id": 21,
-//         "quote": "Your time is limited, so don’t waste it living someone else’s life.",
-//         "author": "Steve Jobs"
-//     },
-//     {
-//         "id": 22,
-//         "quote": "Winning isn’t everything, but wanting to win is.",
-//         "author": "Vince Lombardi"
-//     },
-//     {
-//         "id": 23,
-//         "quote": "I am not a product of my circumstances. I am a product of my decisions.",
-//         "author": "Stephen Covey"
-//     },
-//     {
-//         "id": 24,
-//         "quote": "Every child is an artist.  The problem is how to remain an artist once he grows up.",
-//         "author": "Pablo Picasso"
-//     },
-//     {
-//         "id": 25,
-//         "quote": "You can never cross the ocean until you have the courage to lose sight of the shore.",
-//         "author": "Christopher Columbus"
-//     },
-//     {
-//         "id": 26,
-//         "quote": "I’ve learned that people will forget what you said, people will forget what you did, but people will never forget how you made them feel.",
-//         "author": "Maya Angelou"
-//     },
-//     {
-//         "id": 27,
-//         "quote": "Either you run the day, or the day runs you.",
-//         "author": "Jim Rohn"
-//     },
-//     {
-//         "id": 28,
-//         "quote": "Whether you think you can or you think you can’t, you’re right.",
-//         "author": "Henry Ford"
-//     },
-//     {
-//         "id": 29,
-//         "quote": "The two most important days in your life are the day you are born and the day you find out why.",
-//         "author": "Mark Twain"
-//     },
-//     {
-//         "id": 30,
-//         "quote": "Whatever you can do, or dream you can, begin it.  Boldness has genius, power and magic in it.",
-//         "author": "Johann Wolfgang von Goethe"
-//     }
-// ]
+onMounted(() => {
+  window.addEventListener("scroll", updateScroll);
+})
+
+onUnmounted(() => {
+  window.removeEventListener("scroll", updateScroll);
+})
 
 function setIsOpen(value) {
     isOpen.value = value
 }
 
 function clearAllFilter() {
-    form.reset()
+  form.research_title_eng = null
+  form.keyword = null
+  form.first_author = null
+  form.journal_name = null
+  form.doi = null
+  form.publication_date = 0
+    //form.reset()
     //setIsOpen(false)
 }
 
@@ -2415,6 +2284,21 @@ function findUser(arr, val) {
     userInfo = JSON.parse(info)
 
     return
+}
+
+const updateScroll = (event) => {
+  scrollPosition.value = window.scrollY
+  if (scrollPosition.value > 200) {
+    // console.log("show to top")
+    toTopButton.value = true
+  } else {
+    toTopButton.value = false
+    // console.log("hidden to top")
+  }
+}
+
+const goToTop = () => {
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 const createData = () => {
@@ -2436,6 +2320,15 @@ const createData = () => {
         //     divisionForm.processing = false
         // }
     });
+}
+
+const searchBySidebarButton = () => {
+  setIsOpen(false)
+  form.get(route('index'),  {
+    preserveState: true,
+    replace: true,
+    onFinish: () => setIsOpen(false),
+  })
 }
 
 </script>
@@ -2478,23 +2371,23 @@ const createData = () => {
                             <div class="absolute inset-0 overflow-y-scroll">
                                 <div class="flex flex-col px-4 py-2 space-y-4">
                                     <Field
-                                        label="TITLE (ENG)"
+                                        label="KEYWORD"
                                         error=""
-                                        help="Title of research's name"
+                                        help="search by keyword"
                                     >
                                         <BaseInput
-                                            v-model="form.research_title_eng"
+                                            v-model="form.keyword"
                                             type="text"
                                             placeholder=""
                                         />
                                     </Field>
 
                                     <Field
-                                        label="AUTHOR FIRST"
+                                        label="FIRST AUTHOR"
                                         error=""
                                     >
                                         <BaseInput
-                                            v-model="form.author_first"
+                                            v-model="form.first_author"
                                             type="text"
                                             placeholder=""
                                         />
@@ -2539,7 +2432,7 @@ const createData = () => {
                         </div>
                         <div class="py-2 px-4 bg-gray-50">
                             <div class="flex flex-col space-y-2 mt-4">
-                                <button class="bg-green-800 p-2 text-white rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700" ref="checkoutButtonRef" @click="setIsOpen(false)">Search</button>
+                                <button class="bg-green-800 p-2 text-white rounded-full hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-700" ref="checkoutButtonRef" @click="searchBySidebarButton()">Search</button>
                                 <div class="flex-row justify-between">
                                     <button class="w-1/2 p-2 bg-white text-gray-500 hover:text-black rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" @click="setIsOpen(false)">Close</button>
                                     <button class="w-1/2 p-2 bg-white text-gray-500 hover:text-black rounded-full focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black" @click="clearAllFilter()">Clear all filter</button>
@@ -2556,7 +2449,7 @@ const createData = () => {
 
     <Head title="Welcome" />
 
-    <div :style="{ backgroundImage: `url(${backgroundImgUrl})`, backgroundSize: 'contain' }">
+    <div class="min-h-screen" :style="{ backgroundImage: `url(${backgroundImgUrl})`, backgroundSize: 'contain' }">
         <div class="flex w-full justify-end m-2">
         <Alert :show="showAlert" :on-dismiss="() => (showAlert = false)" title="Create Research Data">
             <p>ดำเนินการสร้างฐานข้อมูลเรียบร้อย</p>
@@ -2571,8 +2464,11 @@ const createData = () => {
     <div class="flex justify-end mr-2">
         <button @click="createData" class="border p-2 rounded-lg text-white">Create Data</button>
     </div>
-    <div class="flex justify-center m-4 p-10 text-5xl text-white">
-        Faculty of Medicine Siriraj Hospital Electronic Research Finding
+
+    <div class="flex justify-center text-5xl text-white mt-8 md:mt-2 mb-4">
+      <div class="relative w-3/4 justify-center ">
+          Faculty of Medicine Siriraj Hospital Electronic Research Finding
+      </div>
     </div>
 
     <div class="flex w-full justify-center mb-2">
@@ -2584,38 +2480,61 @@ const createData = () => {
     <div class="flex w-full justify-center mb-2 ">
       <div class="relative w-3/4 justify-center">
           <input type="text" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg rounded-l-lg border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search Mockups, Logos, Design Templates..." required>
-          <button type="submit" class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
-              <svg aria-hidden="true" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <button @click="form.get(route('index'),  { preserveState: true, replace: true})"
+                  class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+            <MagnifyingGlassIcon class="w-5 h-5" />
               <span class="sr-only">Search</span>
           </button>
       </div>
     </div>
-    <div class="flex w-full justify-center mb-2">
+    <div v-if="props.researchs.total && props.researchs.total > props.researchs.per_page && props.researchs.from" class="flex w-full justify-center mb-2">
         <Paginate class="relative w-3/4 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />
     </div>
 
     <div
-      v-for="item in props.researchs.data" :key="item.id"
-      class="flex w-full justify-center mb-1"
+      v-for="(item, index) in props.researchs.data" :key="item.id"
+      class="flex w-full justify-center mb-1 "
     >
       <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-50 backdrop-filter backdrop-blur-lg">
         <div>
-          <h1 class="mt-2 text-2xl font-light text-blue-700 ">{{ item.title }}</h1>
-          <p class="mt-1 text-md text-amber-400">{{ item.first_author }}</p>
-          <p class="mt-1 text-md text-white ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}.</p>
+          <h1 class="mt-2 text-2xl font-light text-blue-700 ">{{ index + (props.researchs.from) }}. {{ item.title }}</h1>
+          <p class="mt-1 text-md text-amber-400">
+            <span>
+              <Avatar
+                shape="circle"
+                size="sm"
+                name="Random Image"
+                initials="RI"
+                :src="item.person.image"
+              />
+            </span>
+            {{ item.first_author }}
+
+          </p>
+          <p class="mt-1 text-md text-white ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}.</p>
         </div>
+
         <div class="mt-1 text-md font-light">
           {{ item.abstract }}
         </div>
+
         <div class="mt-1 text-sm text-white">
           KEYWORD:
-          <span v-if="JSON.parse(item.tags).length" class="mx-2" v-for="(tag, index) in JSON.parse(item.tags)" :key="index">#{{ tag.tag }}</span>
+          <span v-if="item.tags" class="mx-2" v-for="(tag, tag_index) in item.tags.split('#')" :key="tag_index">#{{ tag }}</span>
           <span v-else class="mx-2" >-</span>
         </div>
       </div>
     </div>
-    <div class="flex w-full justify-center mb-2">
+
+    <div v-if="props.researchs.total && props.researchs.total > props.researchs.per_page && props.researchs.from" class="flex w-full justify-center mt-2">
       <Paginate class="relative w-3/4 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />
+    </div>
+<!--    <div v-else class="space-y-2"></div>-->
+
+    <div class="">
+      <button v-if="toTopButton" @click="goToTop">
+        <ChevronDoubleUpIcon class="fixed z-50 bottom-10 w-10 h-10 md:w-14 md:h-14 right-1 md:right-8 border-0 p-2 rounded-full drop-shadow-md bg-green-800 text-white font-bold hover:text-white" />
+      </button>
     </div>
 <!--    <div-->
 <!--        v-for="item in fakePosts" :key="item.id"-->

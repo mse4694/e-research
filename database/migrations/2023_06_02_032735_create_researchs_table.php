@@ -23,6 +23,7 @@ return new class extends Migration
             $table->longText('abstract')->nullable();
             $table->string('first_author');
             $table->longText('corresponding_author')->nullable();
+            $table->string('journal_name', 500)->nullable();
             $table->string('isbn')->nullable();
             $table->string('issn')->nullable();
             $table->string('doi');

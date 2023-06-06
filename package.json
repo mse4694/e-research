@@ -21,6 +21,7 @@
         "@headlessui/vue": "^1.7.13",
         "@heroicons/vue": "^2.0.18",
         "class-variance-authority": "^0.6.0",
+        "dayjs": "^1.11.8",
         "lodash": "^4.17.21",
         "uuid": "^9.0.0"
     }

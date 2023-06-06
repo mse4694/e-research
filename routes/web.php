@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Foundation\Application;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 use Illuminate\Support\Facades\Redirect;
@@ -17,14 +18,32 @@ use Illuminate\Support\Facades\Redirect;
 |
 */
 
-Route::get('/', function () {
-    $researchs = \App\Models\Research::paginate(5);
+Route::match(['get', 'post'],'/', function () {
+    $query = \App\Models\Research::query();
+
+    if( request()->keyword ) {
+        $query->filterByKeyword(request()->keyword);
+    }
+
+    if( request()->first_author ) {
+        $query->filterByFirstAuthor(request()->first_author);
+    }
+
+    if( request()->doi ) {
+        $query->filterByDoi(request()->doi);
+    }
+
+    $researchs = $query->with('person:id,image')
+                    ->orderBy('publish_date', 'desc')
+                    ->paginate(5)
+                    ->withQueryString();
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
         'researchs' => $researchs,
+        'filters' => Request::only(['keyword','first_author','doi'])
     ]);
 })->name('index');
 

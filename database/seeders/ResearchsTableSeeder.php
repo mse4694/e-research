@@ -37,9 +37,9 @@ class ResearchsTableSeeder extends Seeder
                 'isbn' => "{$digit_2_1}-{$digit_4_1}-{$digit_3_1}",
                 'issn' => "{$digit_3_2}-{$digit_2_2}-{$digit_4_2}",
                 'doi' => "{$digit_2_1}.{$digit_3_2}{$digit_3_1}/".Str::random(6),
-                'tags' => '[]',
+                'tags' => null,
                 'person_id' => $person->id,
-                'publish_date' => $this->randomDate('2010-01-01', '2023-12-31')
+                'publish_date' => $this->randomDate('2010-01-01', '2023-06-01')
             ]);
         }
     }
