@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, ref, onMounted, onUnmounted} from 'vue'
+import {reactive, ref, onMounted, onUnmounted, computed} from 'vue'
 import { Head, useForm, router } from '@inertiajs/vue3';
 import {
     Dialog,
@@ -10,11 +10,15 @@ import {
 } from '@headlessui/vue'
 import * as dayjs from 'dayjs'
 import * as localizedFormat from 'dayjs/plugin/localizedFormat'
+import * as relativeTime from 'dayjs/plugin/relativeTime'
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 import { FunnelIcon, XMarkIcon, ChevronDoubleUpIcon, MagnifyingGlassIcon } from '@heroicons/vue/24/outline'
 import Field from '../Components/Field.vue'
 import BaseInput from '../Components/BaseInput.vue'
 import BaseRadioGroup from '../Components/Radio/BaseRadioGroup.vue'
 import BaseLabel from '../Components/BaseLabel.vue'
+import BaseListbox from '../Components/BaseListbox.vue';
 import Alert from '../Components/Alert.vue';
 import Avatar from '../Components/Avatar.vue';
 import Paginate from '../Components/Pagination.vue'
@@ -22,6 +26,7 @@ import backgroundImgUrl from '@/Asset/images/background2.jpg'
 import Profile from '../Components/Profile.vue'
 
 dayjs.extend(localizedFormat)
+dayjs.extend(relativeTime)
 
 const props = defineProps({
     canLogin: {
@@ -43,22 +48,25 @@ const props = defineProps({
         default: []
     },
     filters: Object ,
+    start_year: String,
+    end_year: String,
 });
 
 const form = useForm({
-  research_title_eng: null,
+  item_per_page: props.filters.item_per_page ? props.filters.item_per_page : 5,
+  title: props.filters.title ? props.filters.title : null,
   keyword: props.filters.keyword ? props.filters.keyword : null,
   first_author: props.filters.first_author ? props.filters.first_author : null,
-  journal_name: null,
+  journal_name: props.filters.journal_name ? props.filters.journal_name : null,
   doi: props.filters.doi ? props.filters.doi : null,
-  publication_date: 0,
+  publication_date_range: 0,
+  custom_publication_date_range: [],
 })
 
 const publication_date = [
-    { value: 0, label: 'All'},
     { value: 1, label: '1 year' },
-    { value: 5, label: '5 years' },
-    { value: 10, label: '10 years' },
+    { value: 2, label: '2 years' },
+    { value: 'custom', label: 'Custom' },
 ]
 
 //const backgroundImgUrl = new URL('@/assets/images/background2.jpg', import.meta.url)
@@ -68,6 +76,7 @@ const scrollPosition = ref(null)
 let checkoutButtonRef =ref(null)
 const showAlert = ref(false)
 let userInfo = reactive({})
+const formatDate = ref(new Date());
 
 const fakeUser = [
     {
@@ -2268,12 +2277,13 @@ function setIsOpen(value) {
 }
 
 function clearAllFilter() {
-  form.research_title_eng = null
+  form.title = null
   form.keyword = null
   form.first_author = null
   form.journal_name = null
   form.doi = null
-  form.publication_date = 0
+  form.publication_date_range = 0
+  form.custom_publication_date_range = []
     //form.reset()
     //setIsOpen(false)
 }
@@ -2331,6 +2341,22 @@ const searchBySidebarButton = () => {
   })
 }
 
+const format = (formatDate) => {
+  const day = formatDate.getDate();
+  const month = formatDate.getMonth() + 1;
+  const year = formatDate.getFullYear();
+
+  return `Selected date is ${day}/${month}/${year}`;
+}
+
+const showCustomRange = computed(() => {
+  //console.log(typeof(form.publication_date))
+  if( form.publication_date_range == 'custom' ) {
+    return true
+  }
+  return false
+})
+
 </script>
 
 <template>
@@ -2370,10 +2396,18 @@ const searchBySidebarButton = () => {
                         <div class="flex-1 relative">
                             <div class="absolute inset-0 overflow-y-scroll">
                                 <div class="flex flex-col px-4 py-2 space-y-4">
+                                    <BaseListbox
+                                      label="DISPLAY (DEFAULT 5)"
+                                      placeholder="Please Select"
+                                      v-model="form.item_per_page"
+                                      :options="[{value: 5, label: '5'}, {value: 10, label: '10'}, {value: 20, label: '20'}, {value: 50, label: '50'}]"
+                                      help="Number of research is display on one page."
+                                    />
+
                                     <Field
                                         label="KEYWORD"
                                         error=""
-                                        help="search by keyword"
+                                        help="Do not enter '#' character"
                                     >
                                         <BaseInput
                                             v-model="form.keyword"
@@ -2421,10 +2455,17 @@ const searchBySidebarButton = () => {
                                         PUBLICATION DATE
                                     </BaseLabel>
                                     <BaseRadioGroup
-                                        v-model="form.publication_date"
+                                        v-model="form.publication_date_range"
                                         :options="publication_date"
                                         name="publication_date"
                                         radio-type="base-with-border"
+                                    />
+
+                                    <VueDatePicker
+                                        v-if="showCustomRange"
+                                        v-model="form.custom_publication_date_range"
+                                        range
+                                        year-picker :year-range="[dayjs(props.start_year).year(), dayjs(props.end_year).year()]"
                                     />
                                 </div>
 
@@ -2479,9 +2520,19 @@ const searchBySidebarButton = () => {
 
     <div class="flex w-full justify-center mb-2 ">
       <div class="relative w-3/4 justify-center">
-          <input type="text" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg rounded-l-lg border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search Mockups, Logos, Design Templates..." required>
+          <Field
+            label="FIRST AUTHOR"
+            error=""
+          >
+            <BaseInput
+              v-model="form.title"
+              type="text"
+              placeholder="Search by title."
+            />
+          </Field>
+<!--          <input v-model="form.title" type="text" id="search-dropdown" class="block p-2.5 w-full z-20 text-sm text-gray-900 bg-gray-50 rounded-r-lg rounded-l-lg border-l-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500" placeholder="Search Mockups, Logos, Design Templates...">-->
           <button @click="form.get(route('index'),  { preserveState: true, replace: true})"
-                  class="absolute top-0 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
+                  class="absolute top-5 right-0 p-2.5 text-sm font-medium text-white bg-blue-700 rounded-r-lg border border-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300">
             <MagnifyingGlassIcon class="w-5 h-5" />
               <span class="sr-only">Search</span>
           </button>
@@ -2511,7 +2562,7 @@ const searchBySidebarButton = () => {
             {{ item.first_author }}
 
           </p>
-          <p class="mt-1 text-md text-white ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}.</p>
+          <p class="mt-1 text-md text-white ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}. [ {{ dayjs(item.publish_date).toNow(true) }} ]</p>
         </div>
 
         <div class="mt-1 text-md font-light">

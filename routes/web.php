@@ -21,6 +21,16 @@ use Illuminate\Support\Facades\Redirect;
 Route::match(['get', 'post'],'/', function () {
     $query = \App\Models\Research::query();
 
+    if( request()->item_per_page ) {
+        $item_per_page = request()->item_per_page;
+    } else {
+        $item_per_page = 5;
+    }
+
+    if( request()->title ) {
+        $query->filterByTitle(request()->title);
+    }
+
     if( request()->keyword ) {
         $query->filterByKeyword(request()->keyword);
     }
@@ -29,13 +39,20 @@ Route::match(['get', 'post'],'/', function () {
         $query->filterByFirstAuthor(request()->first_author);
     }
 
+    if( request()->journal_name ) {
+        $query->filterByJournalName(request()->journal_name);
+    }
+
     if( request()->doi ) {
         $query->filterByDoi(request()->doi);
     }
 
+    $end_year = \App\Models\Research::select('publish_date')->orderBy('publish_date', 'desc')->first();
+    $start_year = \App\Models\Research::select('publish_date')->orderBy('publish_date', 'asc')->first();
+
     $researchs = $query->with('person:id,image')
                     ->orderBy('publish_date', 'desc')
-                    ->paginate(5)
+                    ->paginate($item_per_page)
                     ->withQueryString();
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
@@ -43,7 +60,9 @@ Route::match(['get', 'post'],'/', function () {
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
         'researchs' => $researchs,
-        'filters' => Request::only(['keyword','first_author','doi'])
+        'start_year' => $start_year->publish_date,
+        'end_year' => $end_year->publish_date,
+        'filters' => Request::only(['title','keyword','first_author','journal_name','doi'])
     ]);
 })->name('index');
 

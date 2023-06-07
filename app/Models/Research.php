@@ -22,6 +22,13 @@ class Research extends Model
         return $this->belongsTo(Person::class);
     }
 
+    public function scopeFilterByTitle($query, $filter)
+    {
+        $query->where(function ($query) use ($filter) {
+            $query->where('title', 'like', "%{$filter}%");
+        });
+    }
+
     public function scopeFilterByKeyword($query, $filter)
     {
         $query->where(function ($query) use ($filter) {
