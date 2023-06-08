@@ -47,6 +47,14 @@ Route::match(['get', 'post'],'/', function () {
         $query->filterByDoi(request()->doi);
     }
 
+    if( request()->publication_date_range ) {
+        if( request()->publication_date_range === 'custom' ) {
+            $query->filterByBetweenYear([request()->custom_publication_date_range[0], request()->custom_publication_date_range[1]]);
+        }else if( request()->publication_date_range != 0 ) {
+            $query->filterByBetweenYear([date(NOW()->year) - request()->publication_date_range, date(NOW()->year)]);
+        }
+    }
+
     $end_year = \App\Models\Research::select('publish_date')->orderBy('publish_date', 'desc')->first();
     $start_year = \App\Models\Research::select('publish_date')->orderBy('publish_date', 'asc')->first();
 
@@ -62,7 +70,7 @@ Route::match(['get', 'post'],'/', function () {
         'researchs' => $researchs,
         'start_year' => $start_year->publish_date,
         'end_year' => $end_year->publish_date,
-        'filters' => Request::only(['title','keyword','first_author','journal_name','doi'])
+        'filters' => Request::only(['title','keyword','first_author','journal_name','doi', 'publication_date_range', 'custom_publication_date_range'])
     ]);
 })->name('index');
 

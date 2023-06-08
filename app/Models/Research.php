@@ -78,11 +78,9 @@ class Research extends Model
         });
     }
 
-    public function scopeFilterByPublicationDate($query, $filter)
+    public function scopeFilterByBetweenYear($query, array $filter)
     {
-        $year =  date(NOW()->year) - $filter;
-        $query->where(function ($query) use ($year) {
-            $query->whereYear('publish_date', '>=', "{$year}");
-        });
+        return $query->whereYear('publish_date', '>=', $filter[0])
+            ->whereYear('publish_date', '<=', $filter[1]);
     }
 }
