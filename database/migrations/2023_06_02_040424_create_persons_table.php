@@ -9,24 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
-    {
-        Schema::create('persons', function (Blueprint $table) {
-            $table->id();
-            $table->string('sap_id', 20)->nullable();
-            $table->string('fname_en')->nullable();
-            $table->string('lname_en')->nullable();
-            $table->string('image', 500)->nullable();
-            $table->json('profiles')->nullable();
-            $table->timestamps();
-        });
-    }
+//    public function up(): void
+//    {
+//        Schema::create('persons', function (Blueprint $table) {
+//            $table->id();
+//            $table->string('sap_id', 20)->nullable();
+//            $table->string('fname_en')->nullable();
+//            $table->string('lname_en')->nullable();
+//            $table->string('image', 500)->nullable();
+//            $table->json('profiles')->nullable();
+//            $table->timestamps();
+//        });
+//    }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
-    {
-        Schema::dropIfExists('persons');
-    }
+//    public function down(): void
+//    {
+//        Schema::dropIfExists('persons');
+//    }
 };

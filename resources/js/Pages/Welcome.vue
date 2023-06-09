@@ -23,7 +23,7 @@ import Alert from '../Components/Alert.vue';
 import Avatar from '../Components/Avatar.vue';
 import Paginate from '../Components/Pagination.vue'
 import Button from '../Components/Button.vue'
-import backgroundImgUrl from '@/Asset/images/midnight.png'
+import backgroundImgUrl from '@/Asset/images/background-book.png'
 import Profile from '../Components/Profile.vue'
 
 dayjs.extend(localizedFormat)
@@ -348,8 +348,8 @@ const showCustomRange = computed(() => {
 
     <Head title="Welcome" />
 
-<!--    <div class="min-h-screen" :style="{ backgroundImage: `url(${backgroundImgUrl})`, backgroundSize: 'contain' }">-->
-    <div class="min-h-screen bg-orange-200" >
+    <div class="min-h-screen" :style="{ backgroundImage: `url(${backgroundImgUrl})`, backgroundSize: 'contain' }">
+<!--    <div class="min-h-screen bg-orange-200" >-->
       <div class="flex w-full justify-end">
         <Alert :show="showAlert" :on-dismiss="() => (showAlert = false)" title="Create Research Data">
           <p>ดำเนินการสร้างฐานข้อมูลเรียบร้อย</p>
@@ -361,9 +361,18 @@ const showCustomRange = computed(() => {
       </button>
 
 <!--    <Profile></Profile>-->
-<!--    <div class="flex justify-end mr-2">-->
+    <div class="flex justify-end mr-2">
+      <Button
+        as="a"
+        intent="text"
+        size="medium"
+        class="text-white"
+        :href="route('export-research')"
+      >
+        Download
+      </Button>
 <!--        <button @click="createData" class="border p-2 rounded-lg text-white">Create Data</button>-->
-<!--    </div>-->
+    </div>
 
     <div class="flex justify-center text-5xl text-green-500 font-semibold mt-2 lg:mt-0 mb-4 w-full">
       <div class="flex relative w-3/4 justify-center items-center shadow-lg">
@@ -374,7 +383,7 @@ const showCustomRange = computed(() => {
     </div>
 
     <div class="flex w-full justify-center mb-2">
-      <div class="flex-col w-full relative w-3/4 md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-orange-100 p-2 rounded-md border border-gray-600">
+      <div class="flex-col w-full relative w-3/4 md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-amber-200 p-2 rounded-md border border-gray-600">
         <div class="font-semibold underline text-lg mb-2"> Additional Filter (recommend to use at least one filter)</div>
 <!--        <div v-if="form.title">-->
 <!--           <span class="font-semibold">TITLE :: </span> <span class="font-semibold text-pink-500">{{ form.title }}</span>-->
@@ -429,30 +438,30 @@ const showCustomRange = computed(() => {
       v-for="(item, index) in props.researchs.data" :key="item.id"
       class="flex w-full justify-center mb-1 "
     >
-      <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-50 backdrop-filter backdrop-blur-lg">
+      <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-10 backdrop-filter backdrop-blur-lg">
         <div>
-          <h1 class="mt-2 text-2xl font-light text-cyan-600 ">{{ index + (props.researchs.from) }}. {{ item.title }}</h1>
+          <h1 class="mt-2 text-2xl font-light text-amber-200 ">{{ index + (props.researchs.from) }}. {{ item.title }}</h1>
           <p class="mt-1 text-md text-amber-400">
             <span>
               <Avatar
                 shape="circle"
-                size="sm"
-                name="Random Image"
+                size="base"
+                name="RI"
                 initials="RI"
-                :src="item.person.image"
+                :src="item.person.image_url"
               />
             </span>
             {{ item.first_author }}
 
           </p>
-          <p class="mt-1 text-md text-blue-600 ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}. [ {{ dayjs(item.publish_date).toNow(true) }} ]</p>
+          <p class="mt-1 text-md text-blue-400 ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}. [ {{ dayjs(item.publish_date).toNow(true) }} ]</p>
         </div>
 
-        <div class="mt-1 text-md font-light">
+        <div class="mt-1 text-md font-light text-white">
           {{ item.abstract }}
         </div>
 
-        <div class="mt-1 text-sm text-blue-600">
+        <div class="mt-1 text-sm text-green-400 ">
           KEYWORD:
           <span v-if="item.tags" class="mx-2" v-for="(tag, tag_index) in item.tags.split('#')" :key="tag_index">#{{ tag }}</span>
           <span v-else class="mx-2" >-</span>

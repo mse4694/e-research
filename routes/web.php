@@ -78,6 +78,10 @@ Route::post('/create-data', function () {
     return Redirect::route('index');
 })->name('create-data');
 
+Route::get('/export-research', function () {
+    return \Maatwebsite\Excel\Facades\Excel::download(new  \App\Exports\ResearchsExport, 'research.xlsx');
+})->name('export-research');
+
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');

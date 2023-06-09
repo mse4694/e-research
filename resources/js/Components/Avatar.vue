@@ -14,7 +14,7 @@ const props = defineProps({
     shape: {
         type: String,
         validator:(value) => ["circle", "square"].includes(value),
-        default: "circle" 
+        default: "circle"
     }
 })
 
@@ -67,9 +67,9 @@ const innerBorderClass = computed(() => {
 <template>
     <span :class="containerClass" :title="props.name">
         <img
-            class="h-full w-full object-cover"
-            v-if="props.src" 
-            :src="verifiedSrc" 
+            class="h-full w-full object-fill bg-blue-900 bg-opacity-50 backdrop-filter backdrop-blur-lg"
+            v-if="props.src"
+            :src="verifiedSrc"
             :alt="props.name"
         >
         <template v-else>{{ fallback }}</template>

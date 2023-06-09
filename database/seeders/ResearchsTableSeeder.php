@@ -15,12 +15,13 @@ class ResearchsTableSeeder extends Seeder
      */
     public function run(): void
     {
-        for ($i=1; $i<=100; $i++) {
-            $person_id = $i%10;
+        $person =  \App\Models\Person::take(100)->get();
+        for ($i=1; $i<=1000; $i++) {
+            $person_id = $i%100;
             if($person_id === 0) {
-                $person_id = 10;
+                $person_id = 100;
             }
-            $person =  \App\Models\Person::find((int)$person_id);
+            //$person =  \App\Models\Person::find((int)$person_id);
             //echo "$person_id";
             //dd($person->fname_en);
             $digit_4_1 =  random_int(1000,9999);
@@ -33,12 +34,12 @@ class ResearchsTableSeeder extends Seeder
             Research::create([
                 'title' => fake()->text,
                 'abstract' => fake()->sentence(50),
-                'first_author' => "{$person->fname_en} {$person->lname_en}",
+                'first_author' => "{$person[$person_id-1]->fname_en} {$person[$person_id-1]->lname_en}",
                 'isbn' => "{$digit_2_1}-{$digit_4_1}-{$digit_3_1}",
                 'issn' => "{$digit_3_2}-{$digit_2_2}-{$digit_4_2}",
                 'doi' => "{$digit_2_1}.{$digit_3_2}{$digit_3_1}/".Str::random(6),
                 'tags' => null,
-                'person_id' => $person->id,
+                'person_id' => $person[$person_id-1]->id,
                 'publish_date' => $this->randomDate('2010-01-01', '2023-06-01')
             ]);
         }
