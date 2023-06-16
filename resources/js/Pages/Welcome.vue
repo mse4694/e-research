@@ -108,19 +108,11 @@ function findUser(arr, val) {
     const myUser =  arr.find((arrVal) => val === arrVal.id)
     let info =  `{"name":"${myUser.firstName} ${myUser.lastName}", "ein":"${myUser.ein}", "ssn":"${myUser.ssn}", "doi":"${myUser.address.coordinates.lat}/${myUser.username}"}`
     userInfo = JSON.parse(info)
-
-    return
 }
 
 const updateScroll = (event) => {
   scrollPosition.value = window.scrollY
-  if (scrollPosition.value > 200) {
-    // console.log("show to top")
-    toTopButton.value = true
-  } else {
-    toTopButton.value = false
-    // console.log("hidden to top")
-  }
+    toTopButton.value = scrollPosition.value > 200;
 }
 
 const goToTop = () => {
@@ -376,14 +368,14 @@ const showCustomRange = computed(() => {
 
     <div class="flex justify-center text-5xl text-green-500 font-semibold mt-2 lg:mt-0 mb-4 w-full">
       <div class="flex relative w-3/4 justify-center items-center shadow-lg">
-        <div class="flex items-center justify-center block md:hidden w-40 h-40 bg-white rounded-full">SIMED</div>
+        <div class="flex items-center justify-center md:hidden w-40 h-40 bg-white rounded-full">SIMED</div>
         <img src="../Asset/images/banner.png" class="w-full object-fill h-40 hidden md:block" />
 <!--          Faculty of Medicine Siriraj Hospital Electronic Research Finding-->
       </div>
     </div>
 
     <div class="flex w-full justify-center mb-2">
-      <div class="flex-col w-full relative w-3/4 md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-amber-200 p-2 rounded-md border border-gray-600">
+      <div class="flex-col w-full relative md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-amber-200 p-2 rounded-md border border-gray-600">
         <div class="font-semibold underline text-lg mb-2"> Additional Filter (recommend to use at least one filter)</div>
 <!--        <div v-if="form.title">-->
 <!--           <span class="font-semibold">TITLE :: </span> <span class="font-semibold text-pink-500">{{ form.title }}</span>-->
