@@ -354,6 +354,19 @@ const showCustomRange = computed(() => {
 
 <!--    <Profile></Profile>-->
     <div class="flex justify-end mr-2">
+        <Button
+            as="a"
+            intent="text"
+            size="medium"
+            class="text-white"
+            :href="route('import-research')"
+        >
+            Import
+        </Button>
+        <!--        <button @click="createData" class="border p-2 rounded-lg text-white">Create Data</button>-->
+    </div>
+
+    <div class="flex justify-end mr-2">
       <Button
         as="a"
         intent="text"
@@ -426,44 +439,45 @@ const showCustomRange = computed(() => {
         <Paginate class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />
     </div>
 
-    <div
-      v-for="(item, index) in props.researchs.data" :key="item.id"
-      class="flex w-full justify-center mb-1 "
-    >
-      <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-10 backdrop-filter backdrop-blur-lg">
-        <div>
-          <h1 class="mt-2 text-2xl font-light text-amber-200 ">{{ index + (props.researchs.from) }}. {{ item.title }}</h1>
-          <p class="mt-1 text-md text-amber-400">
-            <span>
-              <Avatar
-                shape="circle"
-                size="base"
-                name="RI"
-                initials="RI"
-                :src="item.person.image_url"
-              />
-            </span>
-            {{ item.first_author }}
+<!--    <div-->
+<!--      v-for="(item, index) in props.researchs.data" :key="item.id"-->
+<!--      class="flex w-full justify-center mb-1 "-->
+<!--    >-->
+<!--      <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-10 backdrop-filter backdrop-blur-lg">-->
+<!--        <div>-->
+<!--          <h1 class="mt-2 text-2xl font-light text-amber-200 ">{{ index + (props.researchs.from) }}. {{ item.title }}</h1>-->
+<!--          <p class="mt-1 text-md text-amber-400">-->
+<!--            <span>-->
+<!--              <Avatar-->
+<!--                shape="circle"-->
+<!--                size="base"-->
+<!--                name="RI"-->
+<!--                initials="RI"-->
+<!--                :src="item.person.image_url"-->
+<!--              />-->
+<!--            </span>-->
+<!--            {{ item.first_author }}-->
 
-          </p>
-          <p class="mt-1 text-md text-blue-400 ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}. [ {{ dayjs(item.publish_date).toNow(true) }} ]</p>
-        </div>
+<!--          </p>-->
+<!--          <p class="mt-1 text-md text-blue-400 ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}. [ {{ dayjs(item.publish_date).toNow(true) }} ]</p>-->
+<!--        </div>-->
 
-        <div class="mt-1 text-md font-light text-white">
-          {{ item.abstract }}
-        </div>
+<!--        <div class="mt-1 text-md font-light text-white">-->
+<!--          {{ item.abstract }}-->
+<!--        </div>-->
 
-        <div class="mt-1 text-sm text-green-400 ">
-          KEYWORD:
-          <span v-if="item.tags" class="mx-2" v-for="(tag, tag_index) in item.tags.split('#')" :key="tag_index">#{{ tag }}</span>
-          <span v-else class="mx-2" >-</span>
-        </div>
-      </div>
-    </div>
+<!--        <div class="mt-1 text-sm text-green-400 ">-->
+<!--          KEYWORD:-->
+<!--          <span v-if="item.tags" class="mx-2" v-for="(tag, tag_index) in item.tags.split('#')" :key="tag_index">#{{ tag }}</span>-->
+<!--          <span v-else class="mx-2" >-</span>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
-    <div v-if="props.researchs.total && props.researchs.total > props.researchs.per_page && props.researchs.from" class="flex w-full justify-center mt-2">
-      <Paginate class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />
-    </div>
+<!--    <div v-if="props.researchs.total && props.researchs.total > props.researchs.per_page && props.researchs.from" class="flex w-full justify-center mt-2">-->
+<!--      <Paginate class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />-->
+<!--    </div>-->
+
 <!--    <div v-else class="space-y-2"></div>-->
 
     <div class="">

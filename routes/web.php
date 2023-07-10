@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Imports\ResearchsImport;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
@@ -55,21 +56,28 @@ Route::match(['get', 'post'],'/', function () {
         }
     }
 
-    $end_year = \App\Models\Research::select('publish_date')->orderBy('publish_date', 'desc')->first();
-    $start_year = \App\Models\Research::select('publish_date')->orderBy('publish_date', 'asc')->first();
+//    $end_year = \App\Models\Research::select('publish_date')->orderBy('publish_date', 'desc')->first();
+//    $start_year = \App\Models\Research::select('publish_date')->orderBy('publish_date', 'asc')->first();
+//
+//    $researchs = $query->with('person:id,image')
+//                    ->orderBy('publish_date', 'desc')
+//                    ->paginate($item_per_page)
+//                    ->withQueryString();
 
-    $researchs = $query->with('person:id,image')
-                    ->orderBy('publish_date', 'desc')
-                    ->paginate($item_per_page)
-                    ->withQueryString();
+
+    $researchs = $query
+        ->orderBy('year', 'desc')
+        ->paginate($item_per_page)
+        ->withQueryString();
+
     return Inertia::render('Welcome', [
         'canLogin' => Route::has('login'),
         'canRegister' => Route::has('register'),
         'laravelVersion' => Application::VERSION,
         'phpVersion' => PHP_VERSION,
         'researchs' => $researchs,
-        'start_year' => $start_year->publish_date,
-        'end_year' => $end_year->publish_date,
+//        'start_year' => $start_year->publish_date,
+//        'end_year' => $end_year->publish_date,
         'filters' => Request::only(['title','keyword','first_author','journal_name','doi', 'publication_date_range', 'custom_publication_date_range'])
     ]);
 })->name('index');
@@ -81,6 +89,15 @@ Route::post('/create-data', function () {
 Route::get('/export-research', function () {
     return \Maatwebsite\Excel\Facades\Excel::download(new  \App\Exports\ResearchsExport, 'research.xlsx');
 })->name('export-research');
+
+Route::get('/import-research', function () {
+    //$import = \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\ResearchsImport, storage_path('\excel\research.xlsx'));
+    $import = new ResearchsImport();
+    $import->import(storage_path('\excel\research.xlsx'));
+
+    //dd($import->errors());
+    return Redirect::route('index');
+})->name('import-research');
 
 Route::get('/dashboard', function () {
     return Inertia::render('Dashboard');
