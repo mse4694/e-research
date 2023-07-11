@@ -6,7 +6,8 @@ import {
     DialogOverlay,
     DialogTitle,
     TransitionRoot,
-    TransitionChild
+    TransitionChild,
+    Disclosure, DisclosureButton, DisclosurePanel
 } from '@headlessui/vue'
 import * as dayjs from 'dayjs'
 import * as localizedFormat from 'dayjs/plugin/localizedFormat'
@@ -57,7 +58,7 @@ const form = useForm({
   item_per_page: props.filters.item_per_page ? props.filters.item_per_page : 5,
   title: props.filters.title ? props.filters.title : null,
   keyword: props.filters.keyword ? props.filters.keyword : null,
-  first_author: props.filters.first_author ? props.filters.first_author : null,
+  author: props.filters.author ? props.filters.author : null,
   journal_name: props.filters.journal_name ? props.filters.journal_name : null,
   doi: props.filters.doi ? props.filters.doi : null,
   publication_date_range: props.filters.publication_date_range ? props.filters.publication_date_range : 0,
@@ -94,7 +95,7 @@ function setIsOpen(value) {
 function clearAllFilter() {
   form.title = null
   form.keyword = null
-  form.first_author = null
+  form.author = null
   form.journal_name = null
   form.doi = null
   form.publication_date_range = 0
@@ -137,6 +138,18 @@ const createData = () => {
         // onFinish: () => {
         //     divisionForm.processing = false
         // }
+    });
+}
+
+const importData = () => {
+    //let error_display = ''
+
+    router.post(route('import-research'), {}, {
+        preserveState: true,
+        onSuccess: () => {
+            console.log('success')
+            showAlert.value = true
+        },
     });
 }
 
@@ -230,26 +243,26 @@ const showCustomRange = computed(() => {
                                     </Field>
 
                                     <Field
-                                        label="FIRST AUTHOR"
+                                        label="AUTHOR"
                                         error=""
                                     >
                                         <BaseInput
-                                            v-model="form.first_author"
+                                            v-model="form.author"
                                             type="text"
                                             placeholder=""
                                         />
                                     </Field>
 
-                                    <Field
-                                        label="JOURNAL NAME"
-                                        error=""
-                                    >
-                                        <BaseInput
-                                            v-model="form.journal_name"
-                                            type="text"
-                                            placeholder=""
-                                        />
-                                    </Field>
+<!--                                    <Field-->
+<!--                                        label="JOURNAL NAME"-->
+<!--                                        error=""-->
+<!--                                    >-->
+<!--                                        <BaseInput-->
+<!--                                            v-model="form.journal_name"-->
+<!--                                            type="text"-->
+<!--                                            placeholder=""-->
+<!--                                        />-->
+<!--                                    </Field>-->
 
                                     <Field
                                         label="DOI"
@@ -262,27 +275,27 @@ const showCustomRange = computed(() => {
                                         />
                                     </Field>
 
-                                    <BaseLabel
-                                        for="publication_date"
-                                    >
-                                        PUBLICATION DATE
-                                    </BaseLabel>
-                                    <BaseRadioGroup
-                                        v-model="form.publication_date_range"
-                                        :options="publication_date"
-                                        name="publication_date"
-                                        radio-type="base-with-border"
-                                    />
+<!--                                    <BaseLabel-->
+<!--                                        for="publication_date"-->
+<!--                                    >-->
+<!--                                        PUBLICATION DATE-->
+<!--                                    </BaseLabel>-->
+<!--                                    <BaseRadioGroup-->
+<!--                                        v-model="form.publication_date_range"-->
+<!--                                        :options="publication_date"-->
+<!--                                        name="publication_date"-->
+<!--                                        radio-type="base-with-border"-->
+<!--                                    />-->
 
-                                    <VueDatePicker
-                                        @closed="checkCustomRange"
-                                        @cleared="disableButtonStatus = true; form.publication_date_range = 0"
-                                        v-if="showCustomRange"
-                                        v-model="form.custom_publication_date_range"
-                                        placeholder="Select year range"
-                                        range
-                                        year-picker :year-range="[dayjs(props.start_year).year(), dayjs(props.end_year).year()]"
-                                    />
+<!--                                    <VueDatePicker-->
+<!--                                        @closed="checkCustomRange"-->
+<!--                                        @cleared="disableButtonStatus = true; form.publication_date_range = 0"-->
+<!--                                        v-if="showCustomRange"-->
+<!--                                        v-model="form.custom_publication_date_range"-->
+<!--                                        placeholder="Select year range"-->
+<!--                                        range-->
+<!--                                        year-picker :year-range="[dayjs(props.start_year).year(), dayjs(props.end_year).year()]"-->
+<!--                                    />-->
                                 </div>
 
                             </div>
@@ -343,8 +356,8 @@ const showCustomRange = computed(() => {
     <div class="min-h-screen" :style="{ backgroundImage: `url(${backgroundImgUrl})`, backgroundSize: 'contain' }">
 <!--    <div class="min-h-screen bg-orange-200" >-->
       <div class="flex w-full justify-end">
-        <Alert :show="showAlert" :on-dismiss="() => (showAlert = false)" title="Create Research Data">
-          <p>ดำเนินการสร้างฐานข้อมูลเรียบร้อย</p>
+        <Alert :show="showAlert" :on-dismiss="() => (showAlert = false)" title="Import data success">
+<!--          <p>ดำเนินการสร้างฐานข้อมูลเรียบร้อย</p>-->
         </Alert>
       </div>
 
@@ -353,17 +366,15 @@ const showCustomRange = computed(() => {
       </button>
 
 <!--    <Profile></Profile>-->
-    <div class="flex justify-end mr-2">
+    <div class="flex justify-end mr-2" v-if="! props.researchs.total">
         <Button
-            as="a"
+            @click="importData"
             intent="text"
             size="medium"
             class="text-white"
-            :href="route('import-research')"
         >
             Import
         </Button>
-        <!--        <button @click="createData" class="border p-2 rounded-lg text-white">Create Data</button>-->
     </div>
 
     <div class="flex justify-end mr-2">
@@ -439,46 +450,70 @@ const showCustomRange = computed(() => {
         <Paginate class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />
     </div>
 
-<!--    <div-->
-<!--      v-for="(item, index) in props.researchs.data" :key="item.id"-->
-<!--      class="flex w-full justify-center mb-1 "-->
-<!--    >-->
-<!--      <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-10 backdrop-filter backdrop-blur-lg">-->
-<!--        <div>-->
-<!--          <h1 class="mt-2 text-2xl font-light text-amber-200 ">{{ index + (props.researchs.from) }}. {{ item.title }}</h1>-->
-<!--          <p class="mt-1 text-md text-amber-400">-->
-<!--            <span>-->
-<!--              <Avatar-->
-<!--                shape="circle"-->
-<!--                size="base"-->
-<!--                name="RI"-->
-<!--                initials="RI"-->
-<!--                :src="item.person.image_url"-->
-<!--              />-->
-<!--            </span>-->
-<!--            {{ item.first_author }}-->
+    <div
+      v-for="(item, index) in props.researchs.data" :key="item.id"
+      class="flex w-full justify-center mb-1 "
+    >
+      <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-10 backdrop-filter backdrop-blur-lg">
+        <div>
+          <h1 class="mt-2 text-2xl font-light text-amber-200 ">{{ index + (props.researchs.from) }}. {{ item.title }}</h1>
+          <p class="mt-1 text-md text-amber-400">
+            <span>
+              <Avatar
+                shape="circle"
+                size="base"
+                name="RI"
+                initials="RI"
+                :src="item.person.image_url"
+              />
+            </span>
+            {{ item.full_name }}
 
-<!--          </p>-->
-<!--          <p class="mt-1 text-md text-blue-400 ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}. [ {{ dayjs(item.publish_date).toNow(true) }} ]</p>-->
-<!--        </div>-->
+          </p>
+          <p class="mt-1 text-md text-blue-400 ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}. [ {{ dayjs(item.publish_date).toNow(true) }} ]</p>
+          <p class="mt-1 text-md text-gray-400 ">{{ item.author }}</p>
+        </div>
 
-<!--        <div class="mt-1 text-md font-light text-white">-->
+        <div class="mt-1 text-md font-light text-white">
 <!--          {{ item.abstract }}-->
-<!--        </div>-->
+            <div v-if="item.abstract.startsWith('[')">
+                {{ item.abstract }}
+            </div>
+            <Disclosure as="div" class="mt-2" v-slot="{ open }" v-else>
+                <DisclosureButton
+                    class="flex w-full justify-between rounded-lg bg-purple-100 px-4 py-2 text-left text-sm font-medium text-purple-900 hover:bg-purple-200 focus:outline-none focus-visible:ring focus-visible:ring-purple-500 focus-visible:ring-opacity-75"
+                >
+                    <span>Abstract</span>
+                    <ChevronDoubleUpIcon
+                        :class="open ? 'rotate-180 transform' : ''"
+                        class="h-5 w-5 text-purple-500"
+                    />
+                </DisclosureButton>
+                <DisclosurePanel class="px-4 pt-4 pb-2 text-sm text-white text-justify">
+                    {{ item.abstract }}
+                </DisclosurePanel>
+            </Disclosure>
+
+        </div>
 
 <!--        <div class="mt-1 text-sm text-green-400 ">-->
 <!--          KEYWORD:-->
 <!--          <span v-if="item.tags" class="mx-2" v-for="(tag, tag_index) in item.tags.split('#')" :key="tag_index">#{{ tag }}</span>-->
 <!--          <span v-else class="mx-2" >-</span>-->
 <!--        </div>-->
-<!--      </div>-->
-<!--    </div>-->
+          <div class="mt-1 text-sm text-green-400 ">
+              KEYWORD:
+              <span v-if="item.author_keyword" class="mx-2" >{{ item.author_keyword }}</span>
+              <span v-else class="mx-2" >-</span>
+          </div>
+      </div>
+    </div>
 
-<!--    <div v-if="props.researchs.total && props.researchs.total > props.researchs.per_page && props.researchs.from" class="flex w-full justify-center mt-2">-->
-<!--      <Paginate class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />-->
-<!--    </div>-->
+    <div v-if="props.researchs.total && props.researchs.total > props.researchs.per_page && props.researchs.from" class="flex w-full justify-center mt-2">
+      <Paginate class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 justify-center bg-green-800 p-1 opacity-90 rounded-md" :pagination="props.researchs" />
+    </div>
 
-<!--    <div v-else class="space-y-2"></div>-->
+    <div v-else class="space-y-2"></div>
 
     <div class="">
       <button v-if="toTopButton" @click="goToTop">

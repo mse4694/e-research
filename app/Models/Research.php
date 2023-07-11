@@ -32,14 +32,14 @@ class Research extends Model
     public function scopeFilterByKeyword($query, $filter)
     {
         $query->where(function ($query) use ($filter) {
-            $query->where('tags', 'like', "%{$filter}%");
+            $query->where('author_keyword', 'like', "%{$filter}%");
         });
     }
 
-    public function scopeFilterByFirstAuthor($query, $filter)
+    public function scopeFilterByAuthor($query, $filter)
     {
         $query->where(function ($query) use ($filter) {
-            $query->where('first_author', 'like', "%{$filter}%");
+            $query->where('author', 'like', "%{$filter}%");
         });
     }
 

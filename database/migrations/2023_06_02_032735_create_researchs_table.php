@@ -51,6 +51,7 @@ return new class extends Migration
             $table->longText('author_keyword')->nullable();
             $table->string('isbn')->nullable();
             $table->string('issn')->nullable();
+            $table->unsignedBigInteger('person_id');
             $table->json('other')->nullable();
             $table->timestamps();
         });
@@ -61,6 +62,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('research');
+        Schema::dropIfExists('researchs');
     }
 };

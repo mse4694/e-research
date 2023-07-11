@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Redirect;
 */
 
 Route::match(['get', 'post'],'/', function () {
-    $query = \App\Models\Research::query();
+    $query = \App\Models\Research::query()->where('person_id', '<>', 0);
 
     if( request()->item_per_page ) {
         $item_per_page = request()->item_per_page;
@@ -36,8 +36,8 @@ Route::match(['get', 'post'],'/', function () {
         $query->filterByKeyword(request()->keyword);
     }
 
-    if( request()->first_author ) {
-        $query->filterByFirstAuthor(request()->first_author);
+    if( request()->author ) {
+        $query->filterByAuthor(request()->author);
     }
 
     if( request()->journal_name ) {
@@ -65,7 +65,8 @@ Route::match(['get', 'post'],'/', function () {
 //                    ->withQueryString();
 
 
-    $researchs = $query
+    $researchs = $query->with('person:id,image')
+        ->orderBy('id', 'asc')
         ->orderBy('year', 'desc')
         ->paginate($item_per_page)
         ->withQueryString();
@@ -90,7 +91,7 @@ Route::get('/export-research', function () {
     return \Maatwebsite\Excel\Facades\Excel::download(new  \App\Exports\ResearchsExport, 'research.xlsx');
 })->name('export-research');
 
-Route::get('/import-research', function () {
+Route::post('/import-research', function () {
     //$import = \Maatwebsite\Excel\Facades\Excel::import(new \App\Imports\ResearchsImport, storage_path('\excel\research.xlsx'));
     $import = new ResearchsImport();
     $import->import(storage_path('\excel\research.xlsx'));
