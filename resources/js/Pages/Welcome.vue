@@ -353,8 +353,10 @@ const showCustomRange = computed(() => {
 
     <Head title="Welcome" />
 
-    <div class="min-h-screen" :style="{ backgroundImage: `url(${backgroundImgUrl})`, backgroundSize: 'contain' }">
-<!--    <div class="min-h-screen bg-orange-200" >-->
+<!--    <div class="min-h-screen" :style="{ backgroundImage: `url(${backgroundImgUrl})`, backgroundSize: 'contain' }">-->
+    <div class="min-h-screen bg-gradient-to-r from-slate-900 via-purple-900 to-slate-900" >
+<!--    <div class="min-h-screen bg-[conic-gradient(at_top,_var(&#45;&#45;tw-gradient-stops))] from-sky-400 to-blue-800" >-->
+<!--    <div class="min-h-screen bg-[radial-gradient(ellipse_at_center,_var(&#45;&#45;tw-gradient-stops))] from-blue-700 via-blue-800 to-gray-900" >-->
       <div class="flex w-full justify-end">
         <Alert :show="showAlert" :on-dismiss="() => (showAlert = false)" title="Import data success">
 <!--          <p>ดำเนินการสร้างฐานข้อมูลเรียบร้อย</p>-->
@@ -452,9 +454,9 @@ const showCustomRange = computed(() => {
 
     <div
       v-for="(item, index) in props.researchs.data" :key="item.id"
-      class="flex w-full justify-center mb-1 "
+      class="flex w-full justify-center mb-5"
     >
-      <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-10 backdrop-filter backdrop-blur-lg">
+      <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-10 backdrop-filter backdrop-blur-lg shadow-lg shadow-white/50">
         <div>
           <h1 class="mt-2 text-2xl font-light text-amber-200 ">{{ index + (props.researchs.from) }}. {{ item.title }}</h1>
           <p class="mt-1 text-md text-amber-400">
