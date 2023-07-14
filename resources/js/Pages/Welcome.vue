@@ -458,7 +458,7 @@ const showCustomRange = computed(() => {
     >
       <div class="relative w-full md:w-3/4 lg:w-3/4 mr-4 md:mr-0 ml-4 md:ml-0 px-4 py-3 bg-white rounded-md shadow-lg bg-opacity-10 backdrop-filter backdrop-blur-lg shadow-lg shadow-white/50">
         <div>
-          <h1 class="mt-2 text-2xl font-light text-amber-200 ">{{ index + (props.researchs.from) }}. {{ item.title }}</h1>
+          <h1 class="mt-2 text-2xl font-light text-amber-200 ">#{{ index + (props.researchs.from) }}. {{ item.title }}</h1>
           <p class="mt-1 text-md text-amber-400">
             <span>
               <Avatar
@@ -472,7 +472,8 @@ const showCustomRange = computed(() => {
             {{ item.full_name }}
 
           </p>
-          <p class="mt-1 text-md text-blue-400 ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.publish_date).format('ll') }}. [ {{ dayjs(item.publish_date).toNow(true) }} ]</p>
+<!--          <p class="mt-1 text-md text-blue-400 ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ dayjs(item.created_at).format('ll') }}. [ {{ dayjs(item.created_at).toNow(true) }} ]</p>-->
+            <p class="mt-1 text-md text-blue-400 ">ISBN: {{ item.isbn }}. ISSN: {{ item.issn }}. doi: {{ item.doi }}. {{ item.month }} {{ item.year }}.</p>
           <p class="mt-1 text-md text-gray-400 ">{{ item.author }}</p>
         </div>
 
